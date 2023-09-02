@@ -1,0 +1,10 @@
+.vscode/
+.idea/
+
+.DS_Store
+
+front/node_modules/
+**/.env
+venv
+
+__pycache__/

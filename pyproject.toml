@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "prompter-day"
+version = "0.1.0"
+description = ""
+authors = ["Jaeyong Sung <jaeyong0201@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = { extras = ["uvicorn"], version = "^0.103" }
+sqlalchemy = { extras = ["asyncio"], version = "^2.0.17" }
+uvicorn = { extras = ["standard"], version = "^0.23.2" }
+asyncpg = "^0.28.0"
+fastapi-login = "^1.9.1"
+python-multipart = "^0.0.6"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+pylint = "^2.17.4"
+mypy = "^1.5.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
