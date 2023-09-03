@@ -27,8 +27,8 @@ class User(Base):
     __tablename__ = "users"
     username: Mapped[str] = mapped_column(primary_key=True)
     password: Mapped[str]
-    nickname: Mapped[str]
-    profile_img: Mapped[str]
+    nickname: Mapped[str | None]
+    profile_img: Mapped[str | None]
 
     def to_response(self) -> "UserResponse":
         return UserResponse(
@@ -41,7 +41,7 @@ class User(Base):
 class UserForm(BaseModel):
     username: str
     password: str
-    nickname: str
+    nickname: str | None
     profile_img: str | None
 
     def to_user(self) -> User:
@@ -55,8 +55,8 @@ class UserForm(BaseModel):
 
 class UserResponse(BaseModel):
     username: str
-    nickname: str
-    profile_img: str
+    nickname: str | None
+    profile_img: str | None
 
 
 class Session(Base):
