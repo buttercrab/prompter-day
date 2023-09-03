@@ -6,7 +6,7 @@ from fastapi import FastAPI
 
 from .v1 import login, session
 
-app = FastAPI(root_path="/api")
+app = FastAPI()
 app.include_router(v1.router, prefix="/api")
 app.include_router(v1.router, prefix="/api/v1")
 
