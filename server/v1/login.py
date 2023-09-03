@@ -1,7 +1,6 @@
 # pylint: disable=missing-module-docstring, missing-function-docstring, missing-class-docstring
 
 from fastapi import APIRouter, Depends, Response
-from fastapi.security import OAuth2PasswordRequestForm
 from fastapi_login import LoginManager
 from fastapi_login.exceptions import InvalidCredentialsException
 from sqlalchemy import select
@@ -27,13 +26,8 @@ router = APIRouter(prefix="/auth")
 
 
 @router.post("/login")
-async def login(
-    response: Response, data: OAuth2PasswordRequestForm = Depends()
-) -> dict:
-    username = data.username
-    password = data.password
-
-    user = await query_user(data.username)
+async def login(response: Response, username: str, password: str) -> dict:
+    user = await query_user(username)
     if not user:
         raise InvalidCredentialsException
     if not user.password == password:

@@ -1,5 +1,6 @@
 # pylint: disable=missing-module-docstring, missing-function-docstring, missing-class-docstring
 import itertools
+import json
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
@@ -108,7 +109,7 @@ async def ask_session(
             recommendation=res.recommendation,
             knowledge=res.knowledge,
             code_comment=res.code_comment,
-            code=res.code,
+            code=json.dumps(res.code),
         )
         session.add(chat)
         await session.commit()

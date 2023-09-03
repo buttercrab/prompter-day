@@ -2,6 +2,7 @@
 
 import logging
 
+import dotenv
 from fastapi import FastAPI
 
 from .v1 import login, session
@@ -9,6 +10,7 @@ from .v1 import login, session
 app = FastAPI()
 app.include_router(v1.router, prefix="/api")
 app.include_router(v1.router, prefix="/api/v1")
+dotenv.load_dotenv()
 
 
 class EndpointFilter(logging.Filter):

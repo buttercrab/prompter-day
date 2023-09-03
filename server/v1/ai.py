@@ -54,7 +54,7 @@ def post_process(response: str) -> AIResponse:
         recommendation=sections[1].strip(),
         knowledge=sections[2].strip(),
         code_comment=code_comment,
-        code=json.dumps(code_results),
+        code=code_results,
     )
 
 
