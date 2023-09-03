@@ -10,7 +10,7 @@ from .login import manager
 router = APIRouter(prefix="/session")
 
 
-@router.get("/new")
+@router.post("/new")
 async def new_session(name: str, user: User = Depends(manager)) -> SessionResponse:
     async with Database.async_session() as session:
         res = Session(username=user.username, session_name=name)
@@ -45,7 +45,7 @@ async def list_session(user: User = Depends(manager)) -> dict:
         return {"sessions": [r.to_response() for r in res]}
 
 
-@router.get("/delete")
+@router.delete("/delete")
 async def delete_session(session_id: int, user: User = Depends(manager)) -> dict:
     async with Database.async_session() as session:
         stmt = (
@@ -63,7 +63,19 @@ async def delete_session(session_id: int, user: User = Depends(manager)) -> dict
     return {"status": "ok"}
 
 
-@router.get("/ask")
+@router.get("/history/{session_id}")
+async def get_history(session_id: int, user: User = Depends(manager)) -> dict:
+    async with Database.async_session() as session:
+        stmt = (
+            select(Chat)
+            .where(Chat.username == user.username)
+            .where(Chat.session_id == session_id)
+        )
+        res = (await session.execute(stmt)).scalars().all()
+        return {"history": [r.to_response() for r in res]}
+
+
+@router.post("/ask")
 async def ask_session(
     session_id: int, question: str, user: User = Depends(manager)
 ) -> ChatResponse:
