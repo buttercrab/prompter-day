@@ -25,6 +25,7 @@ services:
       SQL_PASSWORD: ${POSTGRES_PASSWORD}
       SQL_DB: ${POSTGRES_DB}
       SQL_HOST: "postgresql:5432"
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
     healthcheck:
       test: curl --fail http://localhost:80/api/healthy || exit 1
       interval: 2s

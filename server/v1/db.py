@@ -6,6 +6,7 @@ import asyncio
 import datetime
 
 from pydantic import BaseModel
+from sqlalchemy import JSON
 from sqlalchemy.ext.asyncio import (
     AsyncAttrs,
     AsyncEngine,
@@ -78,14 +79,25 @@ class SessionResponse(BaseModel):
     session_name: str
 
 
+class AIResponse(BaseModel):
+    score: int
+    recommendation: str
+    knowledge: str
+    code_comment: str
+    code: list[dict[str, str]]
+
+
 class Chat(Base):
     __tablename__ = "chats"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     session_id: Mapped[int]
     username: Mapped[str]
     question: Mapped[str]
-    answer: Mapped[str]
-    advice: Mapped[str]
+    score: Mapped[int]
+    recommendation: Mapped[str]
+    knowledge: Mapped[str]
+    code_comment: Mapped[str]
+    code: Mapped[JSON]
     timestamp: Mapped[datetime.datetime] = mapped_column(
         default=datetime.datetime.utcnow
     )
@@ -96,10 +108,25 @@ class Chat(Base):
             session_id=self.session_id,
             username=self.username,
             question=self.question,
-            answer=self.answer,
-            advice=self.advice,
+            score=self.score,
+            recommendation=self.recommendation,
+            knowledge=self.knowledge,
+            code_comment=self.code_comment,
+            code=self.code,
             timestamp=self.timestamp,
         )
+
+    def to_ai_request(self) -> list[dict[str, str]]:
+        return [
+            {
+                "role": "user",
+                "content": self.question,
+            },
+            {
+                "role": "assistant",
+                "content": f"score: {self.score}, recommendation: {self.recommendation}, knowledge: {self.knowledge}",
+            },
+        ]
 
 
 class ChatResponse(BaseModel):
@@ -107,8 +134,11 @@ class ChatResponse(BaseModel):
     session_id: int
     username: str
     question: str
-    answer: str
-    advice: str
+    score: int
+    recommendation: str
+    knowledge: str
+    code_comment: str
+    code: list[dict[str, str]]
     timestamp: datetime.datetime
 
 

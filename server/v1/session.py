@@ -1,4 +1,5 @@
 # pylint: disable=missing-module-docstring, missing-function-docstring, missing-class-docstring
+import itertools
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
@@ -89,13 +90,25 @@ async def ask_session(
         if not res:
             raise HTTPException(404, "Session not found")
 
-        answer, advice = await ask(session_id, question)
+        stmt = (
+            select(Chat)
+            .where(Chat.session_id == session_id)
+            .order_by(Chat.timestamp.asc())
+        )
+        res = (await session.execute(stmt)).scalars().all()
+        messages = list(itertools.chain.from_iterable(r.to_ai_request() for r in res))
+        messages.append({"role": "user", "content": question})
+
+        res = await ask(messages)
         chat = Chat(
             session_id=session_id,
             username=user.username,
             question=question,
-            answer=answer,
-            advice=advice,
+            score=res.score,
+            recommendation=res.recommendation,
+            knowledge=res.knowledge,
+            code_comment=res.code_comment,
+            code=res.code,
         )
         session.add(chat)
         await session.commit()
