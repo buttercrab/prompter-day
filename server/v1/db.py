@@ -4,9 +4,9 @@
 
 import asyncio
 import datetime
+import json
 
 from pydantic import BaseModel
-from sqlalchemy import JSON
 from sqlalchemy.ext.asyncio import (
     AsyncAttrs,
     AsyncEngine,
@@ -97,7 +97,7 @@ class Chat(Base):
     recommendation: Mapped[str]
     knowledge: Mapped[str]
     code_comment: Mapped[str]
-    code: Mapped[JSON]
+    code: Mapped[str]
     timestamp: Mapped[datetime.datetime] = mapped_column(
         default=datetime.datetime.utcnow
     )
@@ -112,7 +112,7 @@ class Chat(Base):
             recommendation=self.recommendation,
             knowledge=self.knowledge,
             code_comment=self.code_comment,
-            code=self.code,
+            code=json.loads(self.code),
             timestamp=self.timestamp,
         )
 
