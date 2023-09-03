@@ -41,15 +41,11 @@ class User(Base):
 class UserForm(BaseModel):
     username: str
     password: str
-    nickname: str | None
-    profile_img: str | None
 
     def to_user(self) -> User:
         return User(
             username=self.username,
             password=self.password,
-            nickname=self.nickname,
-            profile_img=self.profile_img,
         )
 
 
